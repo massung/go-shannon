@@ -86,7 +86,7 @@ Give a source string. Typically, this string would be what you intend to encode,
 
 #### BuildTableFromOrderedRunes(runes []rune) shannon.Table
 
-Pass in a list of runes in the order of probability. The first rune in the slice occurs most frequently, and the last rune the least. The probability is of each rune is evenly distributed so that combined they add up to 1.0. For example, if the `[]rune{'a','b','c'}` is passed in, the probability map created will be:
+Pass in a list of runes in the order of probability. The first rune in the slice occurs most frequently, and the last rune the least. The probability is of each rune is evenly distributed so that combined they add up to 1.0. For example, if `[]rune{'a','b','c'}` is passed in, the probability map created will be:
 
 ```go
 map[rune]float64{
