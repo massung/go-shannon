@@ -31,16 +31,25 @@ import (
 
 // Code is a Shannon-Fano code point.
 type Code struct {
+	// Char is the rune this code point encodes.
 	Char rune
+
+	// Prob is the probability of this rune occurring.
 	Prob float64
+
+	// Bits make up the bit vector to encode Char.
 	Bits uint32
+
+	// Size is the number of (lower) Bits to use.
 	Size int
 }
 
 // Table is a simple lookup-map for encoding and decoding.
 type Table map[rune]Code
 
-// BuildTable returns Shannon-Fano table for encoding an decoding.
+// BuildTable returns Shannon-Fano table for encoding an decoding. The
+// `freq` is a probability map: each rune maps to probability of it
+// occurring within a source string.
 func BuildTable(freq map[rune]float64) (table Table) {
 	var divide func([]Code)
 
@@ -119,7 +128,9 @@ func BuildTable(freq map[rune]float64) (table Table) {
 	return
 }
 
-// BuildTableFromString builds a Shannon-Fano table from a string.
+// BuildTableFromString builds a Shannon-Fano table from a string. Counts
+// the occurrences of each rune and then computes the total probability
+// for each rune and calls `BuildTable`.
 func BuildTableFromString(s string) Table {
 	freq := make(map[rune]int)
 	prob := make(map[rune]float64)
@@ -155,7 +166,11 @@ func BuildTableFromOrderedRunes(runes []rune) Table {
 	return BuildTable(prob)
 }
 
-// Encode a string using a Shannon-Fano table.
+// Encode a string using a Shannon-Fano table. Returns the bit vector
+// and the number of bits required to encode the string. The bit vector
+// is packed most-significant bit first, so if the length of the bit
+// vector is 1, and the number of bits returned is 7, any bits after the
+// 7 most significant from the first `uint32` will be unused.
 func (t Table) Encode(s string) ([]uint32, int, error) {
 	if len(t) == 0 {
 		return nil, 0, errors.New("empty shannon-fano table")
@@ -192,7 +207,9 @@ func (t Table) Encode(s string) ([]uint32, int, error) {
 	return bitVec, size, nil
 }
 
-// Decode a bit vector into a string using a Shannon-Fano table.
+// Decode a bit vector into a string using a Shannon-Fano table. The same
+// table used to encode the bit vector must be used to decode it. An
+// error is returned if the bit vector, size, or table doesn't match up.
 func (t Table) Decode(bitVec []uint32, size int) (string, error) {
 	var b bytes.Buffer
 	var v uint32
