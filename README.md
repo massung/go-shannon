@@ -1,9 +1,9 @@
 # Shannon-Fano Text Encoding
 
-Huffman is a Go package that implements [Shannon-Fano coding][1] for text strings in [Go][2]. It's coded with the following goals in mind:
+This package implements [Shannon-Fano coding][1] for text strings in [Go][2]. It's designed with the following goals in mind:
 
-* Simple to create Shannon-Fano tables using multiple methods.
-* Table can be written to an `io.Writer` and read from an `io.Reader`.
+* Create Shannon-Fano encode tables through multiple methods.
+* Table can be serialized and deserialized with `encoding/gob`.
 * Encode *and* decode strings to/from `[]uint32` bit vectors.
 
 ## Install
